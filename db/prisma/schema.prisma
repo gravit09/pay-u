@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String             @id @default(uuid())
+  email             String             @unique
+  username          String
+  password          String
+  OnRampTransaction topUpTransaction[]
+  sentTransactions  P2PTransaction[]   @relation("Sender")
+  receivedTransactions P2PTransaction[] @relation("Receiver")
+  Balance           Int                @default(0)
+}
+
+model P2PTransaction {
+  id          String   @id @default(uuid())
+  sender      User     @relation("Sender", fields: [senderId], references: [id])
+  senderId    String
+  receiver    User     @relation("Receiver", fields: [receiverId], references: [id])
+  receiverId  String
+  amount      Int
+  status      TransactionStatus @default(PENDING) 
+  timestamp   DateTime @default(now())
+}
+
+enum TransactionStatus {
+  SUCCESS
+  FAILED
+  PENDING
+}
+
+//transcations model for topup transactions to wallet
+model topUpTransaction {
+  id        String         @id @default(uuid())
+  status    topUpStatus
+  token     String       @unique
+  provider  String
+  amount    Int
+  startTime DateTime
+  userId    String
+  user      User         @relation(fields: [userId], references: [id])
+}
+
+
+
+enum topUpStatus {
+  SUCCESS
+  FAILED
+  PROCESSING
+}
