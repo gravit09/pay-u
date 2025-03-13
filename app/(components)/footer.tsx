@@ -73,7 +73,7 @@ export default function Footer() {
 
           {footerLinks.map((column, i) => (
             <AnimateWhenVisible key={i} variants={fadeIn} className="">
-              <h3 className="font-semibold mb-4">{column.title}</h3>
+              <h3 className="font-semibold text-white mb-4">{column.title}</h3>
               <ul className="space-y-3">
                 {column.links.map((item, j) => (
                   <motion.li

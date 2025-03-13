@@ -55,7 +55,7 @@ export default function Pricing() {
           variants={fadeIn}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-3xl text-white md:text-4xl font-bold mb-4">
             Simple, Transparent Pricing
           </h2>
           <p className="text-gray-400 text-lg">
@@ -84,13 +84,15 @@ export default function Pricing() {
                     Most Popular
                   </motion.div>
                 )}
-                <h3 className="text-xl font-semibold mb-2">{plan.name}</h3>
+                <h3 className="text-xl text-white font-semibold mb-2">
+                  {plan.name}
+                </h3>
                 <div className="mb-4">
                   <motion.span
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                    className="text-4xl font-bold"
+                    className="text-4xl text-white font-bold"
                   >
                     {plan.price}
                   </motion.span>

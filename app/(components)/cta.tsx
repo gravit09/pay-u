@@ -23,7 +23,7 @@ export default function Cta() {
           variants={fadeIn}
           className="max-w-4xl mx-auto text-center"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <h2 className="text-3xl text-white md:text-4xl font-bold mb-6">
             Ready to transform your payment experience?
           </h2>
           <p className="text-xl text-gray-300 mb-8">
@@ -37,15 +37,6 @@ export default function Cta() {
                 className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
               >
                 Create Free Account
-              </Button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-gray-700 text-gray-300 hover:bg-gray-800"
-              >
-                Contact Sales
               </Button>
             </motion.div>
           </div>

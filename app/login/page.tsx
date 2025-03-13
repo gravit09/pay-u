@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Lock, Mail, User, ArrowRight, Loader } from "lucide-react";
 
 export default function UserAuth() {
   const router = useRouter();
@@ -66,7 +67,6 @@ export default function UserAuth() {
 
         window.location.href = "/dashboard";
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || "An error occurred.");
     } finally {
@@ -75,87 +75,128 @@ export default function UserAuth() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-300 dark:bg-gray-700">
-      <div className="m-auto flex items-center align-center h-screen justify-center dark:bg-gray-700">
-        <div className="w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md">
-          <div className="px-6 py-4">
-            <div className="flex justify-center mx-auto">
-              <h3>PayU</h3>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-md overflow-hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+        <div className="px-8 py-6">
+          <div className="flex justify-center mx-auto">
+            <div
+              className="h-12 w-12 cursor-pointer rounded-lg flex items-center justify-center"
+              onClick={() => router.push("/")}
+            >
+              <span className="text-white text-xl font-bold">PayU</span>
             </div>
-            <h3 className="mt-3 text-xl font-medium text-center text-black">
-              {isLogin ? "Welcome Back" : "Create an Account"}
-            </h3>
-            <p className="mt-1 text-center text-gray-500 dark:text-gray-400">
-              {isLogin ? "Login to continue" : "Sign up to get started"}
-            </p>
-            <form onSubmit={handleSubmit}>
-              <div className="w-full mt-4">
-                <input
-                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg dark:border-gray-600 dark:placeholder-gray-400 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email Address"
-                  aria-label="Email Address"
-                  required
-                />
-              </div>
-              {!isLogin && (
-                <div className="w-full mt-4">
-                  <input
-                    className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg dark:border-gray-600 dark:placeholder-gray-400 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
-                    type="username"
-                    value={username}
-                    onChange={(e) => setUserName(e.target.value)}
-                    placeholder="username"
-                    aria-label="username"
-                    required
-                  />
-                </div>
-              )}
-              <div className="w-full mt-4">
-                <input
-                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg dark:border-gray-600 dark:placeholder-gray-400 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
-                  aria-label="Password"
-                  required
-                />
-              </div>
-              {error && (
-                <p className="mt-2 text-sm text-red-500 text-center">{error}</p>
-              )}
-              <div className="flex items-center justify-between mt-4">
-                {isLogin && (
-                  <a
-                    href="#"
-                    className="text-sm text-gray-500 hover:text-gray-300"
-                  >
-                    Forgot Password?
-                  </a>
-                )}
-                <button
-                  type="submit"
-                  className="px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-black rounded-lg hover:bg-gray-700 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
-                  disabled={loading}
-                >
-                  {loading ? "Loading..." : isLogin ? "Login" : "Sign Up"}
-                </button>
-              </div>
-            </form>
           </div>
-          <div className="flex items-center justify-center py-4 text-center bg-black">
-            <span className="text-sm text-white">
+
+          <h2 className="mt-6 text-2xl font-bold text-center text-gray-800 dark:text-white">
+            {isLogin ? "Welcome Back" : "Create Account"}
+          </h2>
+
+          <p className="mt-2 text-center text-gray-600 dark:text-gray-400">
+            {isLogin
+              ? "Sign in to access your account"
+              : "Fill in your details to get started"}
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+            <div className="relative">
+              <Mail
+                size={18}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+              <input
+                className="w-full pl-10 pr-4 py-3 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none transition-colors"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email Address"
+                aria-label="Email Address"
+                required
+              />
+            </div>
+
+            {!isLogin && (
+              <div className="relative">
+                <User
+                  size={18}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+                <input
+                  className="w-full pl-10 pr-4 py-3 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none transition-colors"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUserName(e.target.value)}
+                  placeholder="Username"
+                  aria-label="Username"
+                  required
+                />
+              </div>
+            )}
+
+            <div className="relative">
+              <Lock
+                size={18}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+              <input
+                className="w-full pl-10 pr-4 py-3 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none transition-colors"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                aria-label="Password"
+                required
+              />
+            </div>
+
+            {error && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between">
+              {isLogin && (
+                <a
+                  href="#"
+                  className="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                >
+                  Forgot Password?
+                </a>
+              )}
+              <div className="flex-grow"></div>
+              <button
+                type="submit"
+                className="px-6 py-3 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center space-x-2"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader size={16} className="animate-spin" />
+                    <span>Processing...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>{isLogin ? "Sign In" : "Create Account"}</span>
+                    <ArrowRight size={16} />
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div className="px-8 py-5 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-center">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
               {isLogin ? "Don't have an account?" : "Already have an account?"}
             </span>
-            <p
-              className="mx-2 text-sm font-bold text-blue-500 dark:text-blue-400 hover:underline cursor-pointer"
+            <button
+              type="button"
+              className="ml-2 text-sm font-semibold text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
               onClick={() => setIsLogin((prev) => !prev)}
             >
-              {isLogin ? "Register" : "Login"}
-            </p>
+              {isLogin ? "Sign Up" : "Sign In"}
+            </button>
           </div>
         </div>
       </div>

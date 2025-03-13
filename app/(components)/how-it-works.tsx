@@ -36,7 +36,7 @@ export default function HowItWorks() {
           variants={fadeIn}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-3xl text-white md:text-4xl font-bold mb-4">
             How PayU Works
           </h2>
           <p className="text-gray-400 text-lg">
@@ -54,12 +54,14 @@ export default function HowItWorks() {
               <motion.div
                 initial={{ opacity: 0.5, x: 0 }}
                 whileHover={{ opacity: 1, x: 5 }}
-                className="text-5xl font-bold text-gray-800"
+                className="text-5xl font-bold text-white"
               >
                 {step.step}
               </motion.div>
               <div className="mt-4">
-                <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
+                <h3 className="text-xl text-white font-semibold mb-2">
+                  {step.title}
+                </h3>
                 <p className="text-gray-400">{step.description}</p>
               </div>
               {index < 2 && (

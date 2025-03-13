@@ -121,7 +121,7 @@ export async function p2pTransfer(username: string, amount: number) {
   }
 
   if (sender.Balance < amount) {
-    throw new Error("💰 Insufficient balance. You don’t have enough funds.");
+    throw new Error("💰 Insufficient balance. You don't have enough funds.");
   }
 
   // Fetch receiver
@@ -159,7 +159,7 @@ export async function p2pTransfer(username: string, amount: number) {
           senderId,
           receiverId: receiver.id,
           amount,
-          status: "PENDING",
+          status: "SUCCESS",
         },
       }),
     ]);
@@ -175,4 +175,15 @@ export async function p2pTransfer(username: string, amount: number) {
       throw new Error("❌ Transaction failed: Unknown error occurred.");
     }
   }
+}
+
+export async function getp2pTranscations() {
+  const session = await getServerSession(authOptions);
+  const id = session?.user?.id;
+  const transactions = await prisma.p2PTransaction.findMany({
+    where: {
+      OR: [{ senderId: id }, { receiverId: id }],
+    },
+  });
+  return transactions;
 }

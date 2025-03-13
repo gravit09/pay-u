@@ -32,7 +32,7 @@ export default function Testimonials() {
           variants={fadeIn}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-3xl text-white md:text-4xl font-bold mb-4">
             What Our Customers Say
           </h2>
           <p className="text-gray-400 text-lg">
@@ -69,7 +69,7 @@ export default function Testimonials() {
                     className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-blue-600"
                   ></motion.div>
                   <div>
-                    <p className="font-medium">{testimonial.name}</p>
+                    <p className="font-medium text-white">{testimonial.name}</p>
                     <p className="text-gray-400 text-sm">{testimonial.role}</p>
                   </div>
                 </div>

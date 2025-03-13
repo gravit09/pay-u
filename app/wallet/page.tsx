@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Card } from "../(components)/card";
 import { Input } from "../(components)/input";
-import { Wallet, ArrowUpCircle, Clock } from "lucide-react";
+import { Wallet, ArrowUpCircle, Clock, RefreshCw } from "lucide-react";
 import {
   topUpWallet,
   getBalance,
@@ -32,8 +32,23 @@ export default function TransactionsPage() {
   const [amount, setAmount] = useState("");
   const [selectedBank, setSelectedBank] = useState("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
   const { data: session, status } = useSession();
   const router = useRouter();
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const balance = await getBalance();
+      const fetchedTransactions = await getTranscations();
+      setBalance(balance);
+      setTransactions(fetchedTransactions);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     // Redirect unauthenticated users to login
@@ -41,49 +56,63 @@ export default function TransactionsPage() {
       router.push("/login");
       return;
     }
-    console.log(session);
-    if (status === "authenticated") {
-      const fetchBalance = async () => {
-        try {
-          const balance = await getBalance();
-          const fetchedTransactions = await getTranscations();
-          setBalance(balance);
-          setTransactions(fetchedTransactions);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
 
-      fetchBalance();
+    if (status === "authenticated") {
+      fetchData();
     }
-  }, [status, router, session]);
+  }, [status, router]);
 
   if (status === "loading") {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
   }
+
+  const formatDate = (dateString: string | Date) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-6xl">
       <div className="grid gap-8 md:grid-cols-2">
         {/* Wallet Card */}
-        <Card className="p-6 space-y-6">
-          <div className="flex items-center gap-2 mb-6">
-            <Wallet className="w-6 h-6 text-primary" />
-            <h2 className="text-2xl font-bold">Your Wallet</h2>
+        <Card className="p-6 space-y-6 shadow-md rounded-lg border border-gray-200">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <Wallet className="w-6 h-6 text-blue-600" />
+              <h2 className="text-2xl font-bold">Your Wallet</h2>
+            </div>
+            <button
+              onClick={fetchData}
+              className="bg-blue-50 text-blue-600 p-2 rounded-full hover:bg-blue-100"
+            >
+              <RefreshCw size={20} />
+            </button>
           </div>
 
-          <div className="bg-primary/10 p-4 rounded-lg">
-            <p className="text-sm text-muted-foreground">Current Balance</p>
-            <p className="text-3xl font-bold">₹{balance.toFixed(2)}</p>
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <p className="text-sm text-gray-600">Current Balance</p>
+            <p className="text-3xl font-bold text-gray-800">
+              ₹{balance.toFixed(2)}
+            </p>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium mb-2 block">
+              <label className="text-sm font-medium mb-2 block text-gray-700">
                 Select Bank
               </label>
               <select
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 value={selectedBank}
                 onChange={(e) => setSelectedBank(e.target.value)}
               >
@@ -97,26 +126,34 @@ export default function TransactionsPage() {
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-2 block">Amount</label>
+              <label className="text-sm font-medium mb-2 block text-gray-700">
+                Amount
+              </label>
               <Input
                 type="number"
                 placeholder="Enter amount"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 min="0"
+                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
             </div>
             <button
-              className="w-full p-2 text-black border cursor-pointer rounded "
+              className={`w-full p-3 text-white rounded-md flex items-center justify-center transition-colors ${
+                !amount || !selectedBank
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
               onClick={async () => {
+                if (!amount || !selectedBank) return;
+
                 try {
                   const { bankUrl } = await topUpWallet(
                     Number(amount),
                     selectedBank
                   );
                   window.open(bankUrl, "_blank");
-                  const newTransactions = await getTranscations();
-                  setTransactions(newTransactions);
+                  await fetchData();
                   setAmount("");
                   setSelectedBank("");
                 } catch (error) {
@@ -125,57 +162,68 @@ export default function TransactionsPage() {
               }}
               disabled={!amount || !selectedBank}
             >
-              <ArrowUpCircle className="w-4 h-4 mr-2 inline" />
+              <ArrowUpCircle className="w-5 h-5 mr-2" />
               Add Money
             </button>
           </div>
         </Card>
 
         {/* Transaction History */}
-        <Card className="p-6">
-          <div className="flex items-center gap-2 mb-6">
-            <Clock className="w-6 h-6 text-primary" />
-            <h2 className="text-2xl font-bold">Transaction History</h2>
+        <Card className="p-6 shadow-md rounded-lg border border-gray-200">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <Clock className="w-6 h-6 text-blue-600" />
+              <h2 className="text-2xl font-bold">Transaction History</h2>
+            </div>
           </div>
 
-          <div className="h-[400px] overflow-y-auto">
-            <div className="space-y-4 pr-4">
-              {transactions.length > 0 ? (
-                transactions.map((transaction) => (
-                  <Card key={transaction.id} className="p-4">
+          {/* Scrollable Transaction List with Border */}
+          <div className="h-96 overflow-y-auto rounded-lg border border-gray-200 shadow-sm bg-white p-3">
+            {loading ? (
+              <div className="flex justify-center py-10">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+              </div>
+            ) : transactions.length > 0 ? (
+              <div className="space-y-3">
+                {transactions.map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    className="bg-gray-50 rounded-lg p-4 shadow-sm border border-gray-200"
+                  >
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="font-medium">
                           Added money from {transaction.provider}
                         </p>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(transaction.startTime).toLocaleDateString()}
+                        <p className="text-xs text-gray-500">
+                          {formatDate(transaction.startTime)}
                         </p>
-                        <p className="font-medium">
-                          Status:
+                        <div className="mt-2">
                           <span
-                            className={
-                              transaction.status === "Success"
-                                ? "text-green-400"
-                                : transaction.status === "Failure"
-                                ? "text-red-400"
-                                : "text-yellow-400"
-                            }
+                            className={`text-xs px-2 py-1 inline-block rounded-full ${
+                              transaction.status === "SUCCESS"
+                                ? "bg-green-100 text-green-800"
+                                : transaction.status === "FAILED"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-yellow-100 text-yellow-800"
+                            }`}
                           >
                             {transaction.status}
                           </span>
-                        </p>
+                        </div>
                       </div>
                       <p className="font-semibold text-green-600">
                         +₹{transaction.amount.toFixed(2)}
                       </p>
                     </div>
-                  </Card>
-                ))
-              ) : (
-                <p className="text-muted-foreground">No transactions yet.</p>
-              )}
-            </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-10 text-gray-500">
+                <p>No transactions found</p>
+              </div>
+            )}
           </div>
         </Card>
       </div>

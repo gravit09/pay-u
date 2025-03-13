@@ -68,31 +68,12 @@ export default function Hero() {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-              >
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-gray-700 text-gray-300 hover:bg-gray-800"
-                >
-                  Contact Sales
-                </Button>
-              </motion.div>
+              ></motion.div>
             </motion.div>
             <motion.div
               variants={fadeIn}
               className="flex items-center gap-4 text-sm text-gray-400"
             >
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4].map((i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ x: -10, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: i * 0.1 }}
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-700"
-                  ></motion.div>
-                ))}
-              </div>
               <p>Trusted by 10,000+ businesses worldwide</p>
             </motion.div>
           </motion.div>
