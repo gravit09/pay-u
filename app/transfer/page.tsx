@@ -45,7 +45,7 @@ export default function P2PTransfer() {
 
       fetchTransactions();
     }
-  }, [status, router]); // Added dependencies to the useEffect
+  }, [status, router]);
 
   const handleQuickSend = (value: number) => {
     setAmount(value);
@@ -64,15 +64,28 @@ export default function P2PTransfer() {
     try {
       const response = await p2pTransfer(username, amount);
 
-      if (!response.success) {
-        throw new Error(
-          response.message || "Transfer failed. Please try again."
-        );
-      }
+      // Check if response is a structured response object
+      if (response && typeof response === "object") {
+        if (!response.success) {
+          setError(response.message || "Transfer failed. Please try again.");
+          return;
+        }
 
-      alert(`₹${amount} sent to @${username} successfully!`);
-      router.push("/dashboard");
-    } catch (error: any) {
+        // Success case
+        alert(`₹${amount} sent to @${username} successfully!`);
+
+        // Refresh transactions list after successful transfer
+        const fetchedTransactions = await getp2pTranscations();
+        setTransactions(fetchedTransactions);
+
+        // Clear form after successful transfer
+        setUsername("");
+        setAmount(null);
+      } else {
+        // Fallback for unexpected response format
+        throw new Error("Received invalid response format from server");
+      }
+    } catch (error: unknown) {
       console.error("Error processing transfer:", error);
       setError(
         error instanceof Error
@@ -98,7 +111,7 @@ export default function P2PTransfer() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4">
+    <div className="bg-slate-50 py-12 px-4">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-8 text-slate-800">
           Money Transfer

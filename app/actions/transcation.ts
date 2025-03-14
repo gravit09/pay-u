@@ -1,5 +1,5 @@
 "use server";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/db/db";
 import { getServerSession } from "next-auth";
 import crypto from "crypto";
 import { authOptions } from "../api/auth/[...nextauth]/authOptions";
@@ -9,8 +9,6 @@ interface Payload {
   amount: number;
   timestamp: number;
 }
-
-const prisma = new PrismaClient();
 
 export async function getBalance() {
   const session = await getServerSession(authOptions);
@@ -99,9 +97,10 @@ const generateSignedPayload = (
 
 export async function p2pTransfer(username: string, amount: number) {
   if (amount <= 0) {
-    throw new Error(
-      "❌ Invalid transfer amount. Amount must be greater than zero."
-    );
+    return {
+      success: false,
+      message: "❌ Invalid transfer amount. Amount must be greater than zero.",
+    };
   }
 
   const session = await getServerSession(authOptions);
@@ -117,11 +116,17 @@ export async function p2pTransfer(username: string, amount: number) {
   });
 
   if (!sender) {
-    throw new Error("⚠️ Sender not found. Please try again.");
+    return {
+      success: false,
+      message: "Sender not found. Please try again.",
+    };
   }
 
   if (sender.Balance < amount) {
-    throw new Error("💰 Insufficient balance. You don't have enough funds.");
+    return {
+      success: false,
+      message: "💰 Insufficient balance. You don't have enough funds.",
+    };
   }
 
   // Fetch receiver
@@ -132,13 +137,17 @@ export async function p2pTransfer(username: string, amount: number) {
   });
 
   if (!receiver) {
-    throw new Error(
-      `❌ Receiver "${username}" not found. Please check the username.`
-    );
+    return {
+      success: false,
+      message: "Reciever with this ID does't exsist Please re-verify",
+    };
   }
 
   if (receiver.id === senderId) {
-    throw new Error("⚠️ You cannot send money to yourself.");
+    return {
+      success: false,
+      message: "Can't Send Money To Yourself",
+    };
   }
 
   try {
@@ -168,7 +177,6 @@ export async function p2pTransfer(username: string, amount: number) {
       message: `✅ ₹${amount} successfully transferred to @${username}!`,
     };
   } catch (error: unknown) {
-    console.error("🔥 P2P Transaction Error:", error);
     if (error instanceof Error) {
       throw new Error(`❌ Transaction failed: ${error.message}`);
     } else {

@@ -33,7 +33,7 @@ export default function TransactionsPage() {
   const [selectedBank, setSelectedBank] = useState("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   const fetchData = async () => {

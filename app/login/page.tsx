@@ -67,8 +67,8 @@ export default function UserAuth() {
 
         window.location.href = "/dashboard";
       }
-    } catch (err: any) {
-      setError(err.message || "An error occurred.");
+    } catch (error: Error | unknown) {
+      setError(error instanceof Error ? error.message : "An error occurred.");
     } finally {
       setLoading(false);
     }
