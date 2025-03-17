@@ -1,46 +1,37 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Button } from "./button";
-import { AnimateWhenVisible, fadeIn } from "./animation-utils";
+import { Button2 } from "./Button2";
+import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Cta() {
+  const router = useRouter();
+
   return (
-    <section className="py-20 bg-gray-950 relative overflow-hidden">
-      <motion.div
-        animate={{
-          backgroundPosition: ["0% 0%", "100% 100%"],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Number.POSITIVE_INFINITY,
-          repeatType: "reverse",
-        }}
-        className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-blue-900/20 z-0"
-      ></motion.div>
-      <div className="container mx-auto px-4 relative z-10">
-        <AnimateWhenVisible
-          variants={fadeIn}
-          className="max-w-4xl mx-auto text-center"
-        >
-          <h2 className="text-3xl text-white md:text-4xl font-bold mb-6">
-            Ready to transform your payment experience?
+    <section className="relative py-24 overflow-hidden">
+      <div className="absolute inset-0 bg-primary" />
+      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1557264337-e8a93017fe92?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-10" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div className="text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold text-primary-foreground mb-6">
+            Ready to Transform Your Payments?
           </h2>
-          <p className="text-xl text-gray-300 mb-8">
-            Join thousands of businesses that trust PayU for their payment
-            needs.
+          <p className="text-xl text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
+            Join millions of users who trust our platform for their payment
+            needs. Experience the future of digital payments today.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-              >
-                Create Free Account
-              </Button>
-            </motion.div>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Button2
+              onClick={() => router.push("/login")}
+              size="lg"
+              variant="secondary"
+              className="text-lg px-8"
+            >
+              Create Free Account
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button2>
           </div>
-        </AnimateWhenVisible>
+        </div>
       </div>
     </section>
   );

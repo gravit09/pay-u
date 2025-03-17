@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getTranscations, getp2pTranscations } from "../actions/transcation";
 import { ArrowUpRight, ArrowDownLeft, RefreshCw } from "lucide-react";
 import { getSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 interface TopUpTransaction {
   id: string;
@@ -42,9 +43,14 @@ export default function TransactionsPage() {
   const [activeTab, setActiveTab] = useState("all"); // "all", "topup", or "p2p"
   const [userId, setUserId] = useState<string>("");
 
+  // Redirect if not authenticated
+
   useEffect(() => {
     const initSession = async () => {
       const session = await getSession();
+      if (!session) {
+        redirect("/login");
+      }
       if (session?.user?.id) {
         setUserId(session.user.id);
       }
@@ -61,8 +67,20 @@ export default function TransactionsPage() {
         getp2pTranscations(),
       ]);
 
-      setTopUpTransactions(topUpData);
-      setP2pTransactions(p2pData);
+      // Sort top-up transactions by startTime in descending order
+      const sortedTopUpData = [...topUpData].sort(
+        (a, b) =>
+          new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+      );
+
+      // Sort p2p transactions by timestamp in descending order
+      const sortedP2pData = [...p2pData].sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      );
+
+      setTopUpTransactions(sortedTopUpData);
+      setP2pTransactions(sortedP2pData);
     } catch (error) {
       console.error("Failed to fetch transactions:", error);
     } finally {
@@ -93,8 +111,10 @@ export default function TransactionsPage() {
       type: "p2p" as const,
     }));
 
+    //sort all transactions together by timestamp, newest first
     return [...formattedTopUp, ...formattedP2p].sort(
-      (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
   };
 

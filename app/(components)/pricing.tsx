@@ -1,136 +1,98 @@
-"use client";
-
-import { CheckCircle } from "lucide-react";
-import { motion } from "framer-motion";
-import { Button } from "./button";
-import { AnimateWhenVisible, fadeIn } from "./animation-utils";
+import { Button2 } from "./Button2";
+import { Card } from "./card";
+import { Check } from "lucide-react";
 
 const plans = [
   {
-    name: "Starter",
-    price: "$29",
-    description: "Perfect for small businesses just getting started.",
+    title: "Personal",
+    price: "Free",
+    description: "Perfect for individual users",
     features: [
-      "2.9% + 30¢ per transaction",
-      "Accept credit & debit cards",
-      "24/7 email support",
-      "Basic fraud protection",
-      "Standard payouts (2-3 days)",
+      "Send money to friends & family",
+      "Digital wallet management",
+      "Mobile app access",
+      "Real-time notifications",
+      "Standard support",
+      "Basic analytics",
     ],
+    buttonText: "Get Started",
+    popular: false,
   },
   {
-    name: "Business",
-    price: "$79",
-    description: "Ideal for growing businesses with higher volume.",
+    title: "Business",
+    price: "$29",
+    description: "Ideal for growing businesses",
     features: [
-      "2.5% + 30¢ per transaction",
-      "All payment methods",
-      "24/7 priority support",
-      "Advanced fraud protection",
-      "Faster payouts (1-2 days)",
-      "Detailed analytics",
+      "Everything in Personal, plus:",
+      "Accept online payments",
+      "Multiple team members",
+      "Advanced analytics",
+      "Priority support",
+      "Custom payment pages",
     ],
+    buttonText: "Start Free Trial",
     popular: true,
   },
   {
-    name: "Enterprise",
+    title: "Enterprise",
     price: "Custom",
-    description: "Tailored solutions for large businesses.",
+    description: "For large organizations",
     features: [
-      "Custom pricing",
-      "Dedicated account manager",
+      "Everything in Business, plus:",
       "Custom integration support",
-      "Enterprise-grade security",
-      "Instant payouts",
-      "Advanced reporting & API access",
+      "Dedicated account manager",
+      "Custom contracts & SLAs",
+      "24/7 phone support",
+      "Advanced security features",
     ],
+    buttonText: "Contact Sales",
+    popular: false,
   },
 ];
 
-export default function Pricing() {
+export function PricingSection() {
   return (
-    <section id="pricing" className="py-20 bg-gray-900">
-      <div className="container mx-auto px-4">
-        <AnimateWhenVisible
-          variants={fadeIn}
-          className="text-center max-w-3xl mx-auto mb-16"
-        >
-          <h2 className="text-3xl text-white md:text-4xl font-bold mb-4">
+    <section className="py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-4">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-gray-400 text-lg">
-            No hidden fees. Choose the plan that works for your business.
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Choose the perfect plan for your needs. No hidden fees, no
+            surprises.
           </p>
-        </AnimateWhenVisible>
-
-        <div className="grid md:grid-cols-3 gap-8">
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {plans.map((plan, index) => (
-            <AnimateWhenVisible key={index} variants={fadeIn} className="">
-              <motion.div
-                whileHover={{ y: -10 }}
-                className={`bg-gray-950 border ${
-                  plan.popular ? "border-purple-500" : "border-gray-800"
-                } rounded-xl p-8 relative ${
-                  plan.popular ? "shadow-lg shadow-purple-500/20" : ""
-                }`}
-              >
-                {plan.popular && (
-                  <motion.div
-                    initial={{ y: -10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                    className="absolute top-0 right-8 transform -translate-y-1/2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full"
-                  >
-                    Most Popular
-                  </motion.div>
-                )}
-                <h3 className="text-xl text-white font-semibold mb-2">
-                  {plan.name}
-                </h3>
+            <Card
+              key={index}
+              className={`relative p-8 ${
+                plan.popular ? "border-primary shadow-lg scale-105" : ""
+              }`}
+            >
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold mb-2">{plan.title}</h3>
+                <p className="text-muted-foreground mb-4">{plan.description}</p>
                 <div className="mb-4">
-                  <motion.span
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                    className="text-4xl text-white font-bold"
-                  >
-                    {plan.price}
-                  </motion.span>
+                  <span className="text-4xl font-bold">{plan.price}</span>
                   {plan.price !== "Custom" && (
-                    <span className="text-gray-400">/month</span>
+                    <span className="text-muted-foreground">/month</span>
                   )}
                 </div>
-                <p className="text-gray-400 mb-6">{plan.description}</p>
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature, i) => (
-                    <motion.li
-                      key={i}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.1 }}
-                      className="flex items-start gap-2"
-                    >
-                      <CheckCircle className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                      <span className="text-gray-300">{feature}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button
-                    className={`w-full ${
-                      plan.popular
-                        ? "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                        : "bg-gray-800 hover:bg-gray-700"
-                    }`}
-                  >
-                    Get Started
-                  </Button>
-                </motion.div>
-              </motion.div>
-            </AnimateWhenVisible>
+              </div>
+              <ul className="space-y-4 mb-8">
+                {plan.features.map((feature, i) => (
+                  <li key={i} className="flex items-start">
+                    <Check className="h-5 w-5 mr-3 text-primary shrink-0 mt-0.5" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button2 className="w-full" variant="outline" size="lg">
+                {plan.buttonText}
+              </Button2>
+            </Card>
           ))}
         </div>
       </div>

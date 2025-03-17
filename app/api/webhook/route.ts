@@ -40,61 +40,92 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Invalid payload" }, { status: 400 });
     }
 
-    // Find the transaction
-    const transaction = await db.topUpTransaction.findUnique({
-      where: { id: txnId },
-    });
+    if (status == "FAILED") {
+      const transaction = await db.topUpTransaction.findUnique({
+        where: { id: txnId },
+      });
 
-    if (!transaction) {
-      return NextResponse.json(
-        { message: "Transaction not found" },
-        { status: 402 }
-      );
-    }
+      console.log(transaction);
 
-    // Prevent duplicate updates
-    if (transaction.status === status) {
-      return NextResponse.json(
-        { message: "Transaction already updated" },
-        { status: 200 }
-      );
-    }
-
-    // Update transaction status
-    const processedTxn = await db.topUpTransaction.update({
-      where: { id: txnId },
-      data: { status: status },
-    });
-
-    // Get user linked to this transaction
-    const txnUser = await db.topUpTransaction.findFirst({
-      where: { id: txnId },
-      include: { user: true },
-    });
-
-    if (!txnUser?.user?.id) {
-      console.error("❌ User not found for transaction:", txnId);
-      return NextResponse.json(
-        { message: "User not found for transaction" },
-        { status: 404 }
-      );
-    }
-
-    const userId = txnUser.user.id;
-
-    if (status === "SUCCESS") {
-      await db.user.update({
-        where: { id: userId },
-        data: { Balance: { increment: processedTxn.amount } },
+      if (!transaction) {
+        return NextResponse.json(
+          { message: "Transaction not found" },
+          { status: 402 }
+        );
+      }
+      // Prevent duplicate updates
+      if (transaction.status === status) {
+        return NextResponse.json(
+          { message: "Transaction already updated" },
+          { status: 200 }
+        );
+      }
+      await db.topUpTransaction.update({
+        where: { id: txnId },
+        data: { status: status },
       });
 
       return NextResponse.json(
-        { message: "Wallet top-up successful!" },
+        { message: "Transcation Completed" },
         { status: 200 }
       );
-    }
+    } else {
+      // Find the transaction
+      const transaction = await db.topUpTransaction.findUnique({
+        where: { id: txnId },
+      });
 
-    return NextResponse.json({ message: "Payment failed!" }, { status: 400 });
+      if (!transaction) {
+        return NextResponse.json(
+          { message: "Transaction not found" },
+          { status: 402 }
+        );
+      }
+
+      // Prevent duplicate updates
+      if (transaction.status === status) {
+        return NextResponse.json(
+          { message: "Transaction already updated" },
+          { status: 200 }
+        );
+      }
+
+      // Update transaction status
+      const processedTxn = await db.topUpTransaction.update({
+        where: { id: txnId },
+        data: { status: status },
+      });
+
+      // Get user linked to this transaction
+      const txnUser = await db.topUpTransaction.findFirst({
+        where: { id: txnId },
+        include: { user: true },
+      });
+
+      if (!txnUser?.user?.id) {
+        console.error("❌ User not found for transaction:", txnId);
+        return NextResponse.json(
+          { message: "User not found for transaction" },
+          { status: 404 }
+        );
+      }
+
+      const userId = txnUser.user.id;
+
+      if (status === "SUCCESS") {
+        await db.user.update({
+          where: { id: userId },
+          data: { Balance: { increment: processedTxn.amount } },
+        });
+
+        return NextResponse.json(
+          { message: "Wallet top-up successful!" },
+          { status: 200 }
+        );
+      }
+
+      return NextResponse.json({ message: "Payment failed!" }, { status: 400 });
+    }
   } catch (error: unknown) {
     return NextResponse.json(
       { message: "Internal Server Error", error: String(error) },

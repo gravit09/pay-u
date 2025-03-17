@@ -104,7 +104,7 @@ export default function UserAuth() {
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               />
               <input
-                className="w-full pl-10 pr-4 py-3 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none transition-colors"
+                className="w-full pl-10 pr-4 py-3 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20 focus:outline-none transition-colors"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -121,7 +121,7 @@ export default function UserAuth() {
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                 />
                 <input
-                  className="w-full pl-10 pr-4 py-3 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none transition-colors"
+                  className="w-full pl-10 pr-4 py-3 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20 focus:outline-none transition-colors"
                   type="text"
                   value={username}
                   onChange={(e) => setUserName(e.target.value)}
@@ -138,7 +138,7 @@ export default function UserAuth() {
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               />
               <input
-                className="w-full pl-10 pr-4 py-3 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none transition-colors"
+                className="w-full pl-10 pr-4 py-3 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20 focus:outline-none transition-colors"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -158,7 +158,7 @@ export default function UserAuth() {
               {isLogin && (
                 <a
                   href="#"
-                  className="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                  className="text-sm text-black hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-200 font-medium"
                 >
                   Forgot Password?
                 </a>
@@ -166,7 +166,7 @@ export default function UserAuth() {
               <div className="flex-grow"></div>
               <button
                 type="submit"
-                className="px-6 py-3 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center space-x-2"
+                className="px-6 py-3 text-sm font-medium text-white bg-black hover:bg-gray-900 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 flex items-center space-x-2"
                 disabled={loading}
               >
                 {loading ? (
@@ -192,7 +192,7 @@ export default function UserAuth() {
             </span>
             <button
               type="button"
-              className="ml-2 text-sm font-semibold text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+              className="ml-2 text-sm font-semibold text-black hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-200"
               onClick={() => setIsLogin((prev) => !prev)}
             >
               {isLogin ? "Sign Up" : "Sign In"}

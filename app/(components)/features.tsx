@@ -1,101 +1,80 @@
-"use client";
-
 import {
   Globe,
-  Zap,
-  ShieldCheck,
   Lock,
   CreditCard,
-  CheckCircle,
+  Shield,
+  Wallet,
+  ChartBar,
 } from "lucide-react";
-import { motion } from "framer-motion";
-import { AnimateWhenVisible, fadeIn } from "./animation-utils";
+
+import { Card } from "./card";
 
 const features = [
   {
-    icon: <Globe className="h-10 w-10 text-purple-500" />,
+    icon: <Shield className="h-8 w-8" />,
+    title: "Bank-Grade Security",
+    description:
+      "Enterprise-level encryption and advanced fraud protection systems safeguard every transaction.",
+  },
+  {
+    icon: <Globe className="h-8 w-8" />,
     title: "Global Payments",
     description:
-      "Accept payments in 100+ currencies from customers around the world.",
+      "Send and receive money instantly across 150+ countries with competitive exchange rates.",
   },
   {
-    icon: <Zap className="h-10 w-10 text-blue-500" />,
-    title: "Instant Transfers",
+    icon: <Wallet className="h-8 w-8" />,
+    title: "Smart Wallet",
     description:
-      "Get paid quickly with our fast settlement options and real-time tracking.",
+      "Manage multiple currencies, track expenses, and earn rewards with our intelligent digital wallet.",
   },
   {
-    icon: <ShieldCheck className="h-10 w-10 text-green-500" />,
-    title: "Fraud Protection",
+    icon: <CreditCard className="h-8 w-8" />,
+    title: "Virtual Cards",
     description:
-      "Advanced AI-powered fraud detection to keep your business safe.",
+      "Create virtual cards for online purchases with customizable spending limits and controls.",
   },
   {
-    icon: <Lock className="h-10 w-10 text-yellow-500" />,
-    title: "Secure Encryption",
+    icon: <ChartBar className="h-8 w-8" />,
+    title: "Advanced Analytics",
     description:
-      "Bank-level encryption and security for all transactions and data.",
+      "Gain insights into your spending patterns with detailed financial analytics and reports.",
   },
   {
-    icon: <CreditCard className="h-10 w-10 text-red-500" />,
-    title: "Multiple Payment Methods",
+    icon: <Lock className="h-8 w-8" />,
+    title: "Secure Authentication",
     description:
-      "Credit cards, bank transfers, digital wallets, and local payment options.",
-  },
-  {
-    icon: <CheckCircle className="h-10 w-10 text-teal-500" />,
-    title: "Easy Integration",
-    description:
-      "Simple API and pre-built components to integrate payments in minutes.",
+      "Multi-factor authentication and biometric security keep your account protected.",
   },
 ];
 
 export default function Features() {
   return (
-    <section id="features" className="py-20 bg-gray-950">
-      <div className="container mx-auto px-4">
-        <AnimateWhenVisible
-          variants={fadeIn}
-          className="text-center max-w-3xl mx-auto mb-16"
-        >
-          <h2 className="text-3xl text-white md:text-4xl font-bold mb-4">
-            Powerful Features for Modern Businesses
+    <section className="py-24 bg-muted/50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-4">
+            Why Millions Choose Us
           </h2>
-          <p className="text-gray-400 text-lg">
-            Everything you need to accept payments and grow your business
-            online.
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Experience the next generation of digital payments with our
+            comprehensive feature set
           </p>
-        </AnimateWhenVisible>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <AnimateWhenVisible key={index} variants={fadeIn} className="">
-              <motion.div
-                whileHover={{
-                  y: -10,
-                  boxShadow:
-                    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                  borderColor: "rgba(139, 92, 246, 0.5)", // Purple color with opacity
-                }}
-                className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-gray-700 transition-all duration-300 h-full"
-              >
-                <motion.div
-                  initial={{ scale: 1 }}
-                  whileHover={{
-                    scale: 1.1,
-                    rotate: [0, 5, 0, -5, 0],
-                    transition: { duration: 0.5 },
-                  }}
-                  className="mb-4"
-                >
+            <Card
+              key={index}
+              className="group hover:shadow-lg transition-all duration-300 p-6"
+            >
+              <div className="flex flex-col items-start">
+                <div className="p-3 bg-primary/10 rounded-lg mb-4 group-hover:bg-primary/20 transition-colors">
                   {feature.icon}
-                </motion.div>
-                <h3 className="text-xl text-white font-semibold mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-400">{feature.description}</p>
-              </motion.div>
-            </AnimateWhenVisible>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.description}</p>
+              </div>
+            </Card>
           ))}
         </div>
       </div>

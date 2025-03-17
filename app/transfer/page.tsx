@@ -37,7 +37,12 @@ export default function P2PTransfer() {
       const fetchTransactions = async () => {
         try {
           const fetchedTransactions = await getp2pTranscations();
-          setTransactions(fetchedTransactions);
+          // Sort transactions by timestamp in descending order (newest first)
+          const sortedTransactions = [...fetchedTransactions].sort(
+            (a, b) =>
+              new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+          );
+          setTransactions(sortedTransactions);
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -76,7 +81,12 @@ export default function P2PTransfer() {
 
         // Refresh transactions list after successful transfer
         const fetchedTransactions = await getp2pTranscations();
-        setTransactions(fetchedTransactions);
+        // Sort transactions by timestamp in descending order (newest first)
+        const sortedTransactions = [...fetchedTransactions].sort(
+          (a, b) =>
+            new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        );
+        setTransactions(sortedTransactions);
 
         // Clear form after successful transfer
         setUsername("");

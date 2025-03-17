@@ -42,7 +42,14 @@ export default function TransactionsPage() {
       const balance = await getBalance();
       const fetchedTransactions = await getTranscations();
       setBalance(balance);
-      setTransactions(fetchedTransactions);
+
+      // Sort transactions by startTime in descending order (latest first)
+      const sortedTransactions = fetchedTransactions.sort(
+        (a, b) =>
+          new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+      );
+
+      setTransactions(sortedTransactions);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
